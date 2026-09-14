@@ -1,29 +1,25 @@
-import os
-import gradio as gr
+import streamlit as st
 from fastai.vision.all import *
 
-# Explicitly re-declare parent_label so FastAI can unpickle model.pkl
+# Define custom labeling function to avoid pickle errors
 def parent_label(o):
     return Path(o).parent.name
 
-learn = load_learner('model.pkl')
-labels = learn.dls.vocab
+st.title("MNIST Digit Classifier")
+st.write("Upload an image of a digit to classify it.")
 
-def predict(img):
-    img = PILImage.create(img)
+@st.cache_resource
+def load_model():
+    return load_learner('model.pkl')
+
+learn = load_model()
+
+uploaded_file = st.file_uploader("Choose an image...", type=["png", "jpg", "jpeg"])
+
+if uploaded_file is not None:
+    img = PILImage.create(uploaded_file)
+    st.image(img, caption='Uploaded Image', width=200)
+    
     pred, pred_idx, probs = learn.predict(img)
-    return {labels[i]: float(probs[i]) for i in range(len(labels))}
-
-image = gr.Image(type="pil")
-label = gr.Label(num_top_classes=2)
-
-demo = gr.Interface(
-    fn=predict, 
-    inputs=image, 
-    outputs=label,
-    title="MNIST Digit Classifier"
-)
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    demo.launch(server_name="0.0.0.0", server_port=port)
+    st.write(f"### Prediction: {pred}")
+    st.write(f"Confidence: {probs[pred_idx]:.4f}")
