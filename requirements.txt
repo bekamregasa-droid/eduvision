@@ -1,5 +1,4 @@
-fastai
+streamlit
 torch
 torchvision
-streamlit
 pillow
