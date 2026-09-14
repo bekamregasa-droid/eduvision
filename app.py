@@ -2,6 +2,10 @@ import os
 import gradio as gr
 from fastai.vision.all import *
 
+# Explicitly re-declare parent_label so FastAI can unpickle model.pkl
+def parent_label(o):
+    return Path(o).parent.name
+
 learn = load_learner('model.pkl')
 labels = learn.dls.vocab
 
