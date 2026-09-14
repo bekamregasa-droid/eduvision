@@ -8,16 +8,12 @@ st.write("Upload an image of a digit to classify it.")
 
 @st.cache_resource
 def load_model():
-    # Load fastai learner
-    from fastai.vision.all import load_learner, Path
-    
-    def parent_label(o):
-        return Path(o).parent.name
-
-    return load_learner('model.pkl')
+    model = torch.jit.load('model.pt', map_location=torch.device('cpu'))
+    model.eval()
+    return model
 
 try:
-    learn = load_model()
+    model = load_model()
     
     uploaded_file = st.file_uploader("Choose an image...", type=["png", "jpg", "jpeg"])
 
@@ -25,11 +21,22 @@ try:
         img = Image.open(uploaded_file).convert('RGB')
         st.image(img, caption='Uploaded Image', width=200)
         
-        pred, pred_idx, probs = learn.predict(img)
+        # Preprocessing matching MNIST fastai pipeline
+        transform = transforms.Compose([
+            transforms.Resize((28, 28)),
+            transforms.ToTensor(),
+        ])
         
-        st.write(f"### Prediction: {pred}")
-        st.write(f"**Confidence:** {probs[pred_idx]:.4f}")
+        tensor_img = transform(img).unsqueeze(0)
+        
+        with torch.no_grad():
+            outputs = model(tensor_img)
+            probs = torch.softmax(outputs, dim=1)[0]
+            pred_idx = torch.argmax(probs).item()
+            
+        st.write(f"### Prediction: {pred_idx}")
+        st.write(f"**Confidence:** {probs[pred_idx].item():.4f}")
 
 except Exception as e:
-    st.error("Model failed to load. Ensure Streamlit Cloud Python version is set to 3.11 in Advanced Settings.")
+    st.error("Failed to load model.")
     st.exception(e)
