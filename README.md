@@ -10,7 +10,7 @@ EduVision is a lightweight computer vision tool designed to help educators evalu
 
 ## Repository Structure
 
-* `app.py`: Gradio application script for processing uploaded quiz images and grading answers.
+* `app.py`: Gradio application script for processing uploaded images and grading answers.
 * `model.onnx`: Exported ONNX model binary ready for runtime execution.
 * `requirements.txt`: Minimal dependencies required for deployment (`gradio`, `onnxruntime`, `opencv-python-headless`, `Pillow`, `numpy`).
 
