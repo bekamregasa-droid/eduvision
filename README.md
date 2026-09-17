@@ -1,18 +1,21 @@
-# EduVision: Offline Handwritten Digit Evaluator
+# EduVision: is Offline Handwritten Digit Evaluator
 
-EduVision is a lightweight computer vision tool designed to help educators evaluate handwritten student quizzes without relying on cloud infrastructure or active internet connectivity.
+EduVision is a lightweight computer vision tool designed to help educators evaluate handwritten student quizzes. It doesn't rely on cloud infrastructure or active internet connectivity.
 
 ## Technical Architecture
-- **Model Training:** Built and trained using native PyTorch.
-- **Model Compilation:** Compiled to ONNX (`model.onnx`) format for lightweight, cross-platform execution without framework overhead.
-- **Inference Pipeline:** Executes client-side via ONNX Runtime (`onnxruntime`), preprocessing normalized grayscale digit tensors.
+
+* **Model Compilation:** Runs an optimized ONNX (`model.onnx`) model for lightweight, cross-platform execution without framework overhead.
+* **Inference Pipeline:** Executes client-side via ONNX Runtime (`onnxruntime`), preprocessing normalized grayscale digit tensors.
+* **User Interface:** Built with Gradio for a responsive, mobile-optimized UI.
 
 ## Repository Structure
-- `app.py`: Streamlit / Gradio application script for processing uploaded images.
-- `model.onnx`: Exported PyTorch model binary ready for runtime execution.
-- `requirements.txt`: Minimal dependencies for low-overhead deployment.
+
+* `app.py`: Gradio application script for processing uploaded quiz images and grading answers.
+* `model.onnx`: Exported ONNX model binary ready for runtime execution.
+* `requirements.txt`: Minimal dependencies required for deployment (`gradio`, `onnxruntime`, `opencv-python-headless`, `Pillow`, `numpy`).
 
 ## How to Run Locally
-```bash
-pip install -r requirements.txt
-streamlit run app.py
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
